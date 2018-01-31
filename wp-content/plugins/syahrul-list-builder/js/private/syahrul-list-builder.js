@@ -23,34 +23,27 @@ jQuery(document).ready(function($){
 
 	}
 
-	// wp uploader
-	// this adds WordPress's file uploader to specially formatted html div.wp-uploader
-	// here's an example of what the html should look like this...
-	/*
-	<div class="wp-uploader">
-	    <input type="text" name="input_name" class="file-url regular-text" accept="jpg|gif">
-	    <input type="hidden" name="input_name" class="file-id" value="0" />
-	    <input type="button" name="upload-btn" class="upload-btn button-secondary" value="Upload">
-	</div>
-	*/
 		$('.slb_select_announce_to').on('change',function () {
 			id_list = this.value;
 			console.log(id_list);
 		});
-
+		var linknya = wpajax_url + '?action=slb_annouce_subscribers';
 		$('form#annoucement_form').bind('submit',function(e){
 			e.preventDefault();
-			var data = $('form#annoucement_form').serialize();
+			var datanya = $('form#annoucement_form').serialize();
 			$.ajax({
-				url: wpajax_url + '?action=slb_annouce_subscribers',
-				method: 'post',
-				dataType: 'json',
-				data: data ,
+				'url':linknya,
+				'method':'post',
+				'dataType':'json',
+				'cache':false,
+				'data':datanya ,
 				success: function( ) {
 						alert('Berhasil');
+						console.log(datanya);
 				},
-				'error': function( ) {
+				error: function( ) {
 					alert('Gagal');
+					console.log(datanya);
 				}
 			});
 		});
