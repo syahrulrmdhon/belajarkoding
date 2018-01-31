@@ -27,23 +27,21 @@ jQuery(document).ready(function($){
 			id_list = this.value;
 			console.log(id_list);
 		});
-		var linknya = wpajax_url + '?action=slb_annouce_subscribers';
+
 		$('form#annoucement_form').bind('submit',function(e){
 			e.preventDefault();
-			var datanya = $('form#annoucement_form').serialize();
+			var data = $('form#annoucement_form').serialize();
 			$.ajax({
-				'url':linknya,
-				'method':'post',
+				'url': wpajax_url + '?action=slb_annouce_subscribers',
+				'method': 'post',
 				'dataType':'json',
 				'cache':false,
-				'data':datanya ,
+				'data': data ,
 				success: function( ) {
 						alert('Berhasil');
-						console.log(datanya);
 				},
-				error: function( ) {
+				'error': function( ) {
 					alert('Gagal');
-					console.log(datanya);
 				}
 			});
 		});
