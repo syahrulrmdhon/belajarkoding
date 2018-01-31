@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+HEAD
 readme pertama
 =======
 # belajarkoding
