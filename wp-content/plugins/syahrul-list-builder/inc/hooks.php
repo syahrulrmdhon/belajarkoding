@@ -40,8 +40,6 @@
   add_action('wp_enqueue_scripts','slb_admin_scripts');
   add_action('admin_enqueue_scripts','slb_admin_scripts');
 
-  add_action('wp_ajax_slb_announce_subscribers','slb_annouce_subscribers');
-
 
   //1.9
   add_action('admin_init','slb_register_options');
