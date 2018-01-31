@@ -109,51 +109,49 @@
       // this function is a ajax form handler...
       // expects form post data: $_POST['subscriber_id'] and $_POST['list_id']
       function slb_unsubscribe() {
-        $result = array(
-          'status' => 0,
-          'message' => 'Subscriptions were NOT updated. ',
-          'error' => '',
-          'errors' => array(),
-        );
+      	// setup default result data
+      	$result = array(
+      		'status' => 0,
+      		'message' => 'Subscriptions were NOT updated. ',
+      		'error' => '',
+      		'errors' => array(),
+      	);
 
-        $subscriber_id = ( isset($_POST['subscriber_id']) ) ? esc_attr( (int)$_POST['subscriber_id'] ) : 0;
-        $list_ids = ( isset($_POST['list_ids']) ) ? $_POST['list_ids'] : 0;
+      	$subscriber_id = ( isset($_POST['subscriber_id']) ) ? esc_attr( (int)$_POST['subscriber_id'] ) : 0;
+      	$list_ids = ( isset($_POST['list_ids']) ) ? $_POST['list_ids'] : 0;
 
-        try {
-          if( check_ajax_referer( 'slb-register-subscription_'.$list_id ) ){
-          // if there are lists to remove
-          if( is_array($list_ids) ):
+      	try {
 
-            // loop over lists to remove
-            foreach( $list_ids as &$list_id ):
+      		// if there are lists to remove
+      		if( is_array($list_ids) ):
 
-              // remove this subscription
-              slb_remove_subscription( $subscriber_id, $list_id );
+      			// loop over lists to remove
+      			foreach( $list_ids as &$list_id ):
 
-            endforeach;
+      				// remove this subscription
+      				slb_remove_subscription( $subscriber_id, $list_id );
 
-          endif;
+      			endforeach;
 
-          // setup success status and message
-          $result['status']=1;
-          $result['message']='Subscriptions updated. ';
+      		endif;
 
-          // get the updated list of subscriptions as html
-          $result['html']= slb_get_manage_subscriptions_html( $subscriber_id );
+      		// setup success status and message
+      		$result['status']=1;
+      		$result['message']='Subscriptions updated. ';
 
-        }
+      		// get the updated list of subscriptions as html
+      		$result['html']= slb_get_manage_subscriptions_html( $subscriber_id );
 
-        } catch( Exception $e ) {
+      	} catch( Exception $e ) {
 
-          // php error
+      		// php error
 
-        }
+      	}
 
-        // return result as json
-        slb_return_json( $result );
+      	// return result as json
+      	slb_return_json( $result );
 
       }
-
       // 5.5
       // hint: removes a single subscription from a subscriber
       function slb_remove_subscription( $subscriber_id, $list_id ) {
@@ -718,6 +716,10 @@
 
     function slb_annouce_subscribers()
     {
+      $list_id = (int)$_POST['list_id'];
+      $subject = esc_attr($_POST['subject']);
+      $message = esc_attr($_POST['message']);
+      $header = array('Content-Type: text/html; charset=UTF-8','From: Belajar Koding');
     	$subscribers = slb_get_list_subscribers($list_id);
       $sendmail = false;
       $i = 0;
