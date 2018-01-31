@@ -266,11 +266,11 @@ function slb_get_default_options() {
         <form id="slb_manage_subscriptions_form" class="slb-form" method="post"
         action="'.get_site_url().'/wp-admin/admin-ajax.php?action=slb_unsubscribe">
           <input type="hidden" name="subscriber_id" value="'. $subscriber_id .'">
-          <h3 class="slb-title">'. $title .'</h3>';
+          <h4 class="slb-title">'. $title .'</h4><br/>';
           if( !count($lists) ):
             $output .='<p>There are no active subscriptions.</p>';
           else:
-            $output .= '<table>
+            $output .= '<table class="table table-striped">
               <tbody>';
               foreach( $lists as &$list_id ):
                 $list_object = get_post( $list_id );
@@ -289,8 +289,8 @@ function slb_get_default_options() {
                 </tr>';
               endforeach;
               $output .='</tbody>
-            </table>
-            <p><input type="submit" value="Save Changes" /></p>';
+            </table><br/><br/>
+            <input type="submit" class="btn btn-success" value="Save Changes" />';
           endif;
         $output .='
           </form>
