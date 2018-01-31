@@ -50,7 +50,7 @@ jQuery(document).ready(function ($) {
 		// submit our form data with ajax
 		$.ajax({
 			'method':'post',
-			'url':unsubscribe_url,
+			'url':wpajax_url + '?action=slb_unsubscribe',
 			'data':form_data,
 			'dataType':'json',
 			'cache':false,
