@@ -156,13 +156,16 @@
       // hint: removes a single subscription from a subscriber
       function slb_remove_subscription( $subscriber_id, $list_id ) {
         $subscription_saved = false;
-        if( slb_subscriber_has_subscription( $subscriber_id, $list_id ) ):
+        if( slb_subscriber_has_subscription( $subscriber_id, $list_id ) ){
           $subscriptions = slb_get_subscriptions( $subscriber_id );
           $needle = array_search( $list_id, $subscriptions );
           unset( $subscriptions[$needle] );
           update_field(slb_get_acf_key( 'slb_subscriptions'), $subscriptions, $subscriber_id);
           $subscription_saved = true;
-        endif;
+        }else {
+          wp_delete_post($subscriber_id,true);
+          $subscription_saved = true;
+        }
         return $subscription_saved;
       }
 
