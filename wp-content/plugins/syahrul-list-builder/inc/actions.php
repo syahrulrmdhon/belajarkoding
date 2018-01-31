@@ -266,3 +266,288 @@
     	    endif;
     	endif;
     }
+    //5.12
+    function slb_update_reward_link_downloads( $uid ) {
+      global $wpdb;
+      $return_value = false;
+      try {
+        $table_name = $wpdb->prefix . "slb_reward_links";
+        // get current download count
+        $current_count = $wpdb->get_var(
+          $wpdb->prepare(
+            "
+              SELECT downloads
+              FROM $table_name
+              WHERE uid = %s
+            ",
+            $uid
+          )
+        );
+        // set new count
+        $new_count = (int)$current_count+1;
+        // update downloads for this reward link entry
+        $wpdb->query(
+          $wpdb->prepare(
+            "
+              UPDATE $table_name
+              SET downloads = $new_count
+              WHERE uid = %s
+            ",
+            $uid
+          )
+        );
+        $return_value = true;
+      } catch( Exception $e ) {
+        // php error
+      }
+      return $return_value;
+    }
+    // 5.13
+    // hint: generates a .csv file of subscribers data
+    // expects $_GET['list_id'] to be set in the URL
+    function slb_download_subscribers_csv() {
+    	$list_id = ( isset($_GET['list_id']) ) ? (int)$_GET['list_id'] : 0;
+    	$csv = '';
+    	$list = get_post( $list_id );
+    	$subscribers = slb_get_list_subscribers( $list_id );
+    	if( $subscribers !== false ):
+    		$now = new DateTime();
+    		$fn1 = 'slb-export-list_id-'. $list_id .'-date-'. $now->format('Ymd'). '.csv';
+    		$fn2 = plugin_dir_path(__FILE__).'exports/'.$fn1;
+    		$fp = fopen($fn2, 'w');
+    		$subscriber_data = slb_get_subscriber_data( $subscribers[0] );
+    		unset($subscriber_data['subscriptions']);
+    		unset($subscriber_data['name']);
+    		$csv_headers = array();
+    		foreach( $subscriber_data as $key => $value ){
+    			array_push($csv_headers, $key);
+    		}
+    		fputcsv($fp, $csv_headers);
+    		foreach( $subscribers as &$subscriber_id ){
+    			$subscriber_data = slb_get_subscriber_data( $subscriber_id );
+    			unset($subscriber_data['subscriptions']);
+    			unset($subscriber_data['name']);
+    			fputcsv($fp, $subscriber_data);
+    		}
+    		$fp = fopen($fn2, 'r');
+    		$fc = fread($fp, filesize($fn2) );
+    		fclose($fp);
+    		header("Content-type: application/csv");
+    		header("Content-Disposition: attachment; filename=".$fn1);
+    		echo($fc);
+    		exit;
+    	endif;
+    	return false;
+    }
+    // 5.14
+    // hint: this function retrieves a csv file from the server and parses the data into a php array
+    // it then returns that array in a json formatted object
+    // this function is a ajax post form handler
+    // expects: $_POST['slb_import_file_id']
+    function slb_parse_import_csv() {
+    	$result = array(
+    		'status'=>0,
+    		'message'=>'Could not parse import CSV. ',
+    		'error'=>'',
+    		'data'=>array(),
+    	);
+    	try {
+    		$attachment_id = (isset($_POST['slb_import_file_id'])) ? esc_attr( $_POST['slb_import_file_id'] ) : 0;
+    		$filename = get_attached_file( $attachment_id );
+    		if( $filename !== false):
+    			$csv_data = slb_csv_to_array($filename,',');
+    			if( $csv_data !== false && count($csv_data) ):
+    				$result = array(
+    					'status'=>1,
+    					'message'=>'CSV Import data parsed successfully',
+    					'error'=>'',
+    					'data'=>$csv_data,
+    				);
+    			endif;
+    		else:
+    			$result['error']='The import file does not exist. ';
+    		endif;
+    	} catch( Exception $e ) {
+    		// php error
+    	}
+    	// return the result as json
+    	slb_return_json( $result );
+    }
+    // 5.15
+    // hint: imports new subscribers from our import admin page
+    // this function is a form handler and expect subscriber data in the $_POST scope
+    function slb_import_subscribers() {
+    	$result = array(
+    		'status'=>0,
+    		'message'=>'Could not import subscribers. ',
+    		'error'=>'',
+    		'errors'=>array(),
+    	);
+    	try {
+    		$fname_column = (isset($_POST['slb_fname_column'])) ? (int)$_POST['slb_fname_column'] : 0;
+    		$email_column = (isset($_POST['slb_email_column'])) ? (int)$_POST['slb_email_column'] : 0;
+    		$list_id = (isset($_POST['slb_import_list_id'])) ? (int)$_POST['slb_import_list_id'] : 0;
+    		$selected_rows = (isset($_POST['slb_import_rows'])) ? (array)$_POST['slb_import_rows'] : array();
+    		$subscribers = array();
+    		$added_count = 0;
+    		foreach( $selected_rows as &$row_id ):
+    			$subscriber_data = array(
+    				'fname'=>(string)$_POST['s_'. $row_id .'_'. $fname_column],
+    				'email'=>(string)$_POST['s_'. $row_id .'_'. $email_column],
+    			);
+    			if( !is_email($subscriber_data['email']) ):
+    				$result['errors'][] = 'Invalid email detected: '. $subscriber_data['email'] .'. This subscriber was not added';
+    			else:
+    				$subscriber_id = slb_save_subscriber( $subscriber_data );
+    				if( $subscriber_id ):
+    					$subscription_added = slb_add_subscription( $subscriber_id, $list_id );
+    					$added_count++;
+    				endif;
+    			endif;
+    		endforeach;
+    		if( $added_count == 0 ):
+    			$result['error'] = 'No subscribers were imported. ';
+    		else:
+    			$result = array(
+    				'status'=>1,
+    				'message'=> $added_count .' Subscribers imported successfully. ',
+    				'error'=>'',
+    				'errors'=>array(),
+    			);
+    		endif;
+    	} catch( Exception $e ) {
+    	}
+    	slb_return_json( $result );
+    }
+    // 5.16
+    // hint: checks the current version of wordpress and displays a message in the plugin page if the version is untested
+    function slb_check_wp_version() {
+    	global $pagenow;
+    	if ( $pagenow == 'plugins.php' && is_plugin_active('syahrul-list-builder/syahrul-list-builder.php') ):
+    		// get the wp version
+    		$wp_version = get_bloginfo('version');
+    		// tested vesions
+    		// these are the versions we've tested our plugin in
+    		$tested_versions = array(
+    			'4.9.0',
+          '4.9.1',
+          '4.9.2',
+    		);
+    		// IF the current wp version is not in our tested versions...
+    		if( !in_array( $wp_version, $tested_versions ) ):
+    			// get notice html
+    			$notice = slb_get_admin_notice('Syahrul List Builder has not been tested in your version of WordPress. It still may work though...','error');
+    			// echo the notice html
+    			echo( $notice );
+    		endif;
+    	endif;
+    }
+    // 5.18
+    // hint: runs functions for plugin deactivation
+    /*function slb_uninstall_plugin() {
+    	// remove our custom plugin tables
+    	slb_remove_plugin_tables();
+    	// remove custom post types posts and data
+    	slb_remove_post_data();
+    	// remove plugin options
+    	slb_remove_options();
+    }*/
+    // 5.19
+    // hint: removes our custom database tabels
+    function slb_remove_plugin_tables() {
+    	// get WP's wpdb class
+    	global $wpdb;
+    	// setup return variable
+    	$tables_removed = false;
+    	try {
+    		// get our custom table name
+    		$table_name = $wpdb->prefix . "slb_reward_links";
+    		// delete table from database
+    		$tables_removed = $wpdb->query("DROP TABLE IF EXISTS $table_name;");
+    	} catch( Exception $e ) {
+    	}
+    	// return result
+    	return $tables_removed;
+    }
+    // 5.20
+    // hint: removes plugin related custom post type post data
+    function slb_remove_post_data() {
+    	// get WP's wpdb class
+    	global $wpdb;
+    	// setup return variable
+    	$data_removed = false;
+    	try {
+    		// get our custom table name
+    		$table_name = $wpdb->prefix . "posts";
+    		// set up custom post types array
+    		$custom_post_types = array(
+    			'slb_subscriber',
+    			'slb_list'
+    		);
+    		// remove data from the posts db table where post types are equal to our custom post types
+    		$data_removed = $wpdb->query(
+    			$wpdb->prepare(
+    				"
+    					DELETE FROM $table_name
+    					WHERE post_type = %s OR post_type = %s
+    				",
+    				$custom_post_types[0],
+    				$custom_post_types[1]
+    			)
+    		);
+    		// get the table names for postmet and posts with the correct prefix
+    		$table_name_1 = $wpdb->prefix . "postmeta";
+    		$table_name_2 = $wpdb->prefix . "posts";
+    		// delete orphaned meta data
+    		$wpdb->query(
+    			$wpdb->prepare(
+    				"
+    				DELETE pm
+    				FROM $table_name_1 pm
+    				LEFT JOIN $table_name_1 wp ON wp.ID = pm.post_id
+    				WHERE wp.ID IS NULL
+    				"
+    			)
+    		);
+    	} catch( Exception $e ) {
+    		// php error
+    	}
+    	// return result
+    	return $data_removed;
+    }
+    // 5.21
+    // hint: removes any custom options from the database
+    function slb_remove_options() {
+    	$options_removed = false;
+    	try {
+    		// get plugin option settings
+    		$options = slb_get_options_settings();
+    		// loop over all the settings
+    		foreach( $options['settings'] as &$setting ):
+    			// unregister the setting
+    			unregister_setting( $options['group'], $setting );
+    		endforeach;
+    		// return true if everything worked
+    		$options_removed = true;
+    	} catch( Exception $e ) {
+    		// php error
+    	}
+    	return $options_removed;
+    }
+    function slb_annouce_subscribers()
+    {
+      $list_id = (int)$_POST['list_id'];
+      $subject = esc_attr($_POST['subject']);
+      $message = esc_attr($_POST['message']);
+      $header = array('Content-Type: text/html; charset=UTF-8','From: Belajar Koding');
+    	$subscribers = slb_get_list_subscribers($list_id);
+      $sendmail = false;
+      $i = 0;
+      foreach ($subscribers as $key) {
+        $a = slb_get_subscriber_data($subscribers[$i]);
+        $c[] = $a['email'];
+        $i++;
+      }
+      $sendmail = wp_mail($c[] , $subject, $message, $header );
+      return $sendmail;
+    }
