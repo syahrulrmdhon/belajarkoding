@@ -109,8 +109,6 @@
       // this function is a ajax form handler...
       // expects form post data: $_POST['subscriber_id'] and $_POST['list_id']
       function slb_unsubscribe() {
-
-        // setup default result data
         $result = array(
           'status' => 0,
           'message' => 'Subscriptions were NOT updated. ',
@@ -159,33 +157,15 @@
       // 5.5
       // hint: removes a single subscription from a subscriber
       function slb_remove_subscription( $subscriber_id, $list_id ) {
-
-        // setup default return value
         $subscription_saved = false;
-
-        // IF the subscriber has the current list subscription
         if( slb_subscriber_has_subscription( $subscriber_id, $list_id ) ):
-
-          // get current subscriptions
           $subscriptions = slb_get_subscriptions( $subscriber_id );
-
-          // get the position of the $list_id to remove
           $needle = array_search( $list_id, $subscriptions );
-
-          // remove $list_id from $subscriptions array
           unset( $subscriptions[$needle] );
-
-          // update slb_subscriptions
           update_field(slb_get_acf_key( 'slb_subscriptions'), $subscriptions, $subscriber_id);
-
-          // subscriptions updated!
           $subscription_saved = true;
-
         endif;
-
-        // return result
         return $subscription_saved;
-
       }
 
       //5.6
