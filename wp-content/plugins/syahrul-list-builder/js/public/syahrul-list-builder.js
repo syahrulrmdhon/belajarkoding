@@ -16,14 +16,12 @@ jQuery(document).ready(function ($) {
 				if( data.status == 1 ) {
 					$form[0].reset();
 					alert(data.message);
-          console.log(form_data);
 				} else {
 					var msg = data.message + '\r' + data.error + '\r';
 					$.each(data.errors,function(key,value){
 						msg += '\r';
 						msg += '- '+ value;
 					});
-          console.log(form_data);
 					alert( msg );
 				}
 			},
