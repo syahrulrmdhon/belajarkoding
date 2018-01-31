@@ -60,7 +60,7 @@
 
       function test($args, $content=''){
         $a = slb_get_list_subscribers(0);
-        $b = print_r($a,true);
+        $b = print_r($a,true)."<br/><br/>";
         return $b;
       }
 
@@ -72,7 +72,7 @@
           $c[] = $a['email'];
           $i++;
         }
-        $b = print_r($c,true);
+        $b = "<h3>List Subscriber</h3> <br/>".print_r($c,true);
         return $b;
       }
 
