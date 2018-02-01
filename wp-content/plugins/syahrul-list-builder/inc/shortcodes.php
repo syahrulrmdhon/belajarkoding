@@ -59,20 +59,26 @@
       }
 
       function test($args, $content=''){
-        $a = slb_get_list_subscribers(0);
-        $b = print_r($a,true);
-        return $b;
-      }
-
-      function test2($args, $content=''){
-        $subscribers = slb_get_list_subscribers( 223 );
+        $subscribers = slb_get_list_subscribers( 230 );
         $i = 0;
         foreach ($subscribers as $key) {
           $a = slb_get_subscriber_data($subscribers[$i]);
           $c[] = $a['email'];
           $i++;
         }
-        $b = print_r($c,true);
+        $b = "<h3>Blog Post List</h3> <br/>".print_r($c,true)."<br/><br/>";
+        return $b;
+      }
+
+      function test2($args, $content=''){
+       $subscribers = slb_get_list_subscribers( 223 );
+        $i = 0;
+        foreach ($subscribers as $key) {
+          $a = slb_get_subscriber_data($subscribers[$i]);
+          $c[] = $a['email'];
+          $i++;
+        }
+        $b = "<h3>Subscriber List</h3> <br/>".print_r($c,true);
         return $b;
       }
 
