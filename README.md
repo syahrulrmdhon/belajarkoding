@@ -1,10 +1,10 @@
 # belajarkoding
 
-### Apa ini?
+## Apa ini?
 
 hasil belajar dari udemy soal theme dan plugin development WordPress
 
-### Dimana theme dan plugin yang kamu buat?
+## Dimana theme dan plugin yang kamu buat?
 
 Theme
 ```
