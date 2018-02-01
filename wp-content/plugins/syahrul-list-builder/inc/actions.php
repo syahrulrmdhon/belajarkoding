@@ -716,17 +716,24 @@
 
     function slb_annouce_subscribers()
     {
-      $list_id = esc_attr($_POST['list_id']);
-      $subject = esc_attr($_POST['subject']);
-      $message = esc_attr($_POST['message']);
-    	$subscribers = slb_get_list_subscribers($list_id);
-      $sendmail = false;
-      $i = 0;
-      foreach ($subscribers as $key) {
-        $a = slb_get_subscriber_data($subscribers[$i]);
-        $c[] = $a['email'];
-        $i++;
-      }
-      $sendmail = wp_mail($c[] , $subject, $message);
+
+      try{
+        $list_id = esc_attr($_POST['list_id']);
+        $subject = esc_attr($_POST['subject']);
+        $message = esc_attr($_POST['message']);
+      	$subscribers = slb_get_list_subscribers($list_id);
+        $sendmail = false;
+        $i = 0;
+        foreach ($subscribers as $key) {
+          $a = slb_get_subscriber_data($subscribers[$i]);
+          $c[] = $a['email'];
+          $i++;
+        }
+        $sendmail = wp_mail($c[] , $subject, $message);
+      } catch( Exception $e ) {
+
+
+    	}
+
       return $sendmail;
     }
