@@ -39,6 +39,7 @@ jQuery(document).ready(function($){
 				method: 'post',
 				dataType:'json',
 				cache:false,
+				contentType:'application/json',
 				data: datanya ,
 				success: function( ) {
 						alert('Berhasil');
