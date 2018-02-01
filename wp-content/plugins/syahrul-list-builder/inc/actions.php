@@ -716,19 +716,47 @@
 
     function slb_annouce_subscribers()
     {
-        $list_id = $_POST['list_id'];
-        $subject = $_POST['subject'];
-        $message = $_POST['message'];
-      	$subscribers = slb_get_list_subscribers($list_id);
-        $wp_mail_headers = array('Content-Type: text/html; charset=UTF-8');
-        $sendmail = false;
-        $i = 0;
-        foreach ($subscribers as $key) {
-          $a = slb_get_subscriber_data($subscribers[$i]);
-          $c[] = $a['email'];
-          $i++;
-        }
-        $sendmail = wp_mail($c , $subject, $message, $wp_mail_headers);
+      $result = array(
+        'status' => 0,
+        'message' => 'Subscribers tidak tersimpan ',
+        'error' => '',
+        'errors' => array()
+       );
+       try {
+            $list_id = (int)$_POST['slb_list'];
+            $subject = $_POST['subject'];
+            $message = $_POST['message'];
+            $send = slb_send_announcement($list_id,$subject,$message);
+            $list = slb_get_list_subscribers($list_id);
+            $namelist = get_post($list);
+          if ($send) {
+            $result['status']=1;
+            $result['message']='Success sending Announcement to '.$namelist->post_title;
+          }
+          else {
+            $result['status']=0;
+            $result['message']='Failed to send to '.$namelist->post_title;
+          }
+        } catch( Exception $e ) {
+
+      		// php error
+
+      	}
+        slb_return_json($result);
+    }
+
+    function slb_send_announcement($list_id, $subject, $message)
+    {
+      $subscribers = slb_get_list_subscribers($list_id);
+      $wp_mail_headers = array('Content-Type: text/html; charset=UTF-8');
+      $sendmail = false;
+      $i = 0;
+      foreach ($subscribers as $key) {
+        $a = slb_get_subscriber_data($subscribers[$i]);
+        $c[] = $a['email'];
+        $i++;
+      }
+      $sendmail = wp_mail($c , $subject, $message, $wp_mail_headers);
 
       return $sendmail;
     }
