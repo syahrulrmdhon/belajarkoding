@@ -28,12 +28,14 @@ jQuery(document).ready(function($){
 			console.log(id_list);
 		});
 
+		var linknya = wpajax_url + '?action=slb_save_subscription';
+
 		$('form#annoucement_form').bind('submit',function(e){
 			e.preventDefault();
 			$form = $(this);
 			var datanya = $form.serialize();
 			$.ajax({
-				url: wpajax_url + '?action=slb_annouce_subscribers',
+				url: linknya,
 				method: 'post',
 				dataType:'json',
 				cache:false,
@@ -44,6 +46,7 @@ jQuery(document).ready(function($){
 				},
 				error: function( ) {
 					alert('Gagal');
+					console.log(datanya);
 					$form[0].reset();
 				}
 			});
