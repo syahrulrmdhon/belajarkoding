@@ -28,7 +28,7 @@ jQuery(document).ready(function($){
 			console.log(id_list);
 		});
 
-		var linknya = wpajax_url + '?action=slb_save_subscription';
+		var linknya = wpajax_url + '?action=slb_annouce_subscribers';
 
 		$('form#annoucement_form').bind('submit',function(e){
 			e.preventDefault();
@@ -42,6 +42,7 @@ jQuery(document).ready(function($){
 				data: datanya ,
 				success: function( ) {
 						alert('Berhasil');
+						console.log(datanya);
 						$form[0].reset();
 				},
 				error: function( ) {
