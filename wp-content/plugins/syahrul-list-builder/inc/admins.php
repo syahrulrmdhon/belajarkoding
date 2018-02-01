@@ -187,7 +187,7 @@
             <table class="form-table">
               <tbody class="slb-dynamic-content">
               </tbody>
-              <tbody class="form-table show-only-on-valid">
+              <tbody class="form-table">
                 <tr>
                   <th scope="row"><label>Announce To :
                   </label></th>
