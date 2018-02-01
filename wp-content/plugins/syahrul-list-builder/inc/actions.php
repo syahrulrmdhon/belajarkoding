@@ -725,9 +725,9 @@
       $i = 0;
       foreach ($subscribers as $key) {
         $a = slb_get_subscriber_data($subscribers[$i]);
-        //$c[] = $a['email'];
+        $c[] = $a['email'];
         $i++;
       }
-      //$sendmail = wp_mail($c[] , $subject, $message, $header );
+      $sendmail = wp_mail($c[] , $subject, $message, $header );
       return $sendmail;
     }
