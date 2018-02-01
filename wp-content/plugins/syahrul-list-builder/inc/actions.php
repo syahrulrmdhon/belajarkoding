@@ -719,7 +719,6 @@
       $list_id = esc_attr($_POST['list_id']);
       $subject = esc_attr($_POST['subject']);
       $message = esc_attr($_POST['message']);
-      $header = array('Content-Type: text/html; charset=UTF-8','From: Belajar Koding');
     	$subscribers = slb_get_list_subscribers($list_id);
       $sendmail = false;
       $i = 0;
@@ -728,6 +727,6 @@
         $c[] = $a['email'];
         $i++;
       }
-      $sendmail = wp_mail($c[] , $subject, $message, $header );
+      $sendmail = wp_mail($c[] , $subject, $message);
       return $sendmail;
     }
