@@ -30,18 +30,21 @@ jQuery(document).ready(function($){
 
 		$('form#annoucement_form').bind('submit',function(e){
 			e.preventDefault();
-			var data = $('form#annoucement_form').serialize();
+			$form = $(this);
+			var datanya = $form.serialize();
 			$.ajax({
-				'url': wpajax_url + '?action=slb_annouce_subscribers',
-				'method': 'post',
-				'dataType':'json',
-				'cache':false,
-				'data': data ,
+				url: wpajax_url + '?action=slb_annouce_subscribers',
+				method: 'post',
+				dataType:'json',
+				cache:false,
+				data: datanya ,
 				success: function( ) {
 						alert('Berhasil');
+						$form[0].reset();
 				},
-				'error': function( ) {
+				error: function( ) {
 					alert('Gagal');
+					$form[0].reset();
 				}
 			});
 		});
