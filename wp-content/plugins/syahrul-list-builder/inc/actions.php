@@ -728,7 +728,7 @@
           $c[] = $a['email'];
           $i++;
         }
-        $sendmail = wp_mail($c[] , $subject, $message, $wp_mail_headers);
+        $sendmail = wp_mail($c , $subject, $message, $wp_mail_headers);
 
       return $sendmail;
     }
