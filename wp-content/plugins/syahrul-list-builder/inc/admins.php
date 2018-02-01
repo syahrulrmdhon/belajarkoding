@@ -242,10 +242,10 @@
               </tbody>
 
             </table>
+            <p><input type="submit" name="submit" id="submit" class="button button-primary" value="Announce that"></input></p>
+            ');
 
-            <p class="submit show-only-on-valid" style="display:none"><input type="submit" name="submit" id="submit" class="button button-primary" value="Import"></p>');
-
-            @submit_button('Announce that!');
+            //@submit_button('Announce that!');
 
 
           echo('</form>
