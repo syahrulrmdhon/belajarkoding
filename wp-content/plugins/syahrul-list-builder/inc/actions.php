@@ -718,13 +718,13 @@
     {
       $result = array(
         'status' => 0,
-        'message' => 'Subscribers tidak tersimpan ',
+        'message' => 'Failed!',
         'error' => '',
         'errors' => array()
        );
        try {
          $list_id = (int)$_POST['list_id'];
-         $message = $_POST['message'];
+         $message = (isset($_POST['message'])) ? (int)$_POST['message'] : 0;
          $subject = $_POST['subject'];
           if(!strlen($message)){
             $errors['message'] = 'Gotta write the message, Im Sorry';
