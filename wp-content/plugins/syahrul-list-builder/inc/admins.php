@@ -185,8 +185,6 @@
           <h2>Announcement to Subscribers</h2>
           <form class="annoucement_form" id="annoucement_form" method="post" action="'.get_site_url().'/wp-admin/admin-ajax.php?action=slb_annouce_subscribers">
             <table class="form-table">
-              <tbody class="slb-dynamic-content">
-              </tbody>
               <tbody class="form-table">
                 <tr>
                   <th scope="row"><label>Announce To :
