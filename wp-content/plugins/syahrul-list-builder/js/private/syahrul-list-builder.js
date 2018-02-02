@@ -25,33 +25,40 @@ jQuery(document).ready(function($){
 
 		$('.slb_select_announce_to').on('change',function () {
 			id_list = this.value;
-			console.log(id_list);
+			//console.log(id_list);
 		});
 
 		var linknya = wpajax_url + '?action=slb_annouce_subscribers';
 
-		$('form#annoucement_form').bind('submit',function(e){
-			e.preventDefault();
+		$('form#annoucement_form').bind('submit',function(){
 			$form = $(this);
 			var datanya = $form.serialize();
 			$.ajax({
-				url: linknya,
 				method: 'post',
+				url: linknya,
 				dataType:'json',
 				cache:false,
 				contentType:'application/json',
 				data: datanya ,
-				success: function( ) {
-						alert('Berhasil');
-						console.log(datanya);
+				'success': function( data, textStatus ) {
+					if( data.status == 1 ) {
 						$form[0].reset();
+						alert(data.message);
+					} else {
+						var msg = data.message + '\r' + data.error + '\r';
+						$.each(data.errors,function(key,value){
+							msg += '\r';
+							msg += '- '+ value;
+						});
+						alert( msg );
+					}
 				},
-				error: function( ) {
-					alert('Gagal');
-					console.log(datanya);
-					$form[0].reset();
+				'error': function( jqXHR, textStatus, errorThrown ) {
+					// ajax didn't work
 				}
+
 			});
+			return false;
 		});
 
 	$('.wp-uploader').each(function(){
