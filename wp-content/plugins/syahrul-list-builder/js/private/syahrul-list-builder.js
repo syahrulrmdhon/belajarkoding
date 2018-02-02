@@ -1,5 +1,4 @@
 // wait until the page and jQuery have loaded before running the code below
-var id_list;
 jQuery(document).ready(function($){
 
 	// setup our wp ajax URL
@@ -24,7 +23,7 @@ jQuery(document).ready(function($){
 	}
 
 		$('.slb_select_announce_to').on('change',function () {
-			id_list = this.value;
+			var id_list = this.value;
 			//console.log(id_list);
 		});
 
