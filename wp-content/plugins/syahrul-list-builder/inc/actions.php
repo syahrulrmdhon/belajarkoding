@@ -723,26 +723,31 @@
         'errors' => array()
        );
        try {
-            $list_id = (int)$_POST['slb_list'];
-            $subject = $_POST['subject'];
-            $message = $_POST['message'];
-            $send = slb_send_announcement($list_id,$subject,$message);
-            $list = slb_get_list_subscribers($list_id);
-            $namelist = get_post($list);
-          if ($send) {
-            $result['status']=1;
-            $result['message']='Success sending Announcement to '.$namelist->post_title;
+         $list_id = (int)$_POST['list_id'];
+         $message = $_POST['message'];
+         $subject = $_POST['subject'];
+          if(!strlen($message)){
+            $errors['message'] = 'Gotta write the message, Im Sorry';
           }
-          else {
-            $result['status']=0;
-            $result['message']='Failed to send to '.$namelist->post_title;
+          if(!strlen($subject)){
+            $errors['subject'] = 'Subject is Necessary';
           }
-        } catch( Exception $e ) {
-
-      		// php error
-
-      	}
-        slb_return_json($result);
+          if (count($errors)) {
+            $result['error'] = 'Some fields are still required';
+            $result['errors'] = $errors;
+          }
+          $email_sent = slb_send_announcement( $list_id, $subject, $message);
+          if( !$email_sent ){
+              $result['error'] = 'Unable to send email. ';
+          }else{
+              $result['status']=1;
+              $result['message']='Success!';
+              unset( $result['error'] );
+          }
+       } catch (Exception $e) {
+         $result['error'] = 'Caught Exception: '.$e->getMessage();
+       }
+       slb_return_json($result);
     }
 
     function slb_send_announcement($list_id, $subject, $message)
