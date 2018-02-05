@@ -37,7 +37,7 @@ jQuery(document).ready(function($){
 				'method': 'post',
 				'url': linknya,
 				'dataType':'json',
-				'data': {datanya:datanya} ,
+				'data': {data:datanya},
 				'success': function( data, textStatus ) {
 					if( data.status == 1 ) {
 						$form[0].reset();
