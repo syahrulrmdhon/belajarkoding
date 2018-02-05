@@ -163,7 +163,8 @@
           update_field(slb_get_acf_key( 'slb_subscriptions'), $subscriptions, $subscriber_id);
           $subscription_saved = true;
         }
-        elseif (slb_subscriber_has_subscription($subscriber_id,$list_id) == false) {
+        $subscriptions = slb_get_subscriptions($subscriber_id);
+        if (empty($subscriptions)) {
           wp_delete_post( $subscriber_id, true);
           $subscription_saved = true;
         }
