@@ -181,7 +181,7 @@
 
       function slb_annoucement_admin(){
         echo ('
-        <div class="wrap" id="annoucement_subscribers">
+        <div class="wrap">
           <h2>Announcement to Subscribers</h2>
           <form class="annoucement_form" id="annoucement_form" method="post" action="'.get_site_url().'/wp-admin/admin-ajax.php?action=slb_annouce_subscribers">
             <table class="form-table">
