@@ -11,6 +11,11 @@ Domain Path: /languages
 License: GPLv2
 
 */
+
+    //1.8
+    add_action('wp_enqueue_scripts','slb_admin_scripts');
+    add_action('admin_enqueue_scripts','slb_admin_scripts');
+
     define( 'SLB_PLUGIN', __FILE__ );
     define( 'SLB_PLUGIN_DIR', untrailingslashit( dirname( SLB_PLUGIN ) ) );
 
