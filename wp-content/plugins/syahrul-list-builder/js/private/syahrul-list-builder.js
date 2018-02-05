@@ -33,11 +33,10 @@ jQuery(document).ready(function($){
 			$form = $(this);
 			var datanya = $form.serialize();
 			$.ajax({
-				method: 'post',
-				url: linknya,
-				dataType:'json',
-				contentType:'application/json',
-				data: datanya ,
+				'method': 'post',
+				'url': linknya,
+				'dataType':'json',
+				'data': datanya ,
 				'success': function( data, textStatus ) {
 					if( data.status == 1 ) {
 						$form[0].reset();
