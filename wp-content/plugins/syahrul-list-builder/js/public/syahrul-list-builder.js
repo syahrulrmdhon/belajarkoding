@@ -36,9 +36,10 @@ jQuery(document).ready(function ($) {
   });
 
 
-// email capture action url
-	var unsubscribe_url = wpajax_url + '?action=slb_unsubscribe';
-  $(document).on('submit','form#slb_manage_subscriptions_form',function(){
+  // email capture action url
+  	var unsubscribe_url = wpajax_url + '?action=slb_unsubscribe';
+
+  	$(document).on('submit','form#slb_manage_subscriptions_form',function(){
 
   		// get the jquery form object
   		$form = $(this);
@@ -52,7 +53,6 @@ jQuery(document).ready(function ($) {
   			'url':unsubscribe_url,
   			'data':form_data,
   			'dataType':'json',
-        contentType: 'json',
   			'cache':false,
   			'success': function( data, textStatus ) {
   				if( data.status == 1 ) {
