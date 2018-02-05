@@ -728,9 +728,10 @@
         'errors' => array()
        );
        try {
-         $list_id = (int)$_POST['list_id'];
-         $message = $_POST['message'];
-         $subject = $_POST['subject'];
+
+         $list_id = (int)$_POST['datanya'][0]['list_id'];
+         $message = $_POST['datanya'][1]['message'];
+         $subject = $_POST['datanya'][2]['subject'];
           if(!strlen($message)){
             $errors['message'] = 'Gotta write the message, Im Sorry';
           }
