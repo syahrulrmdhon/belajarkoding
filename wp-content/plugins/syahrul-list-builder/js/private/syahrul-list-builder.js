@@ -29,9 +29,10 @@ jQuery(document).ready(function($){
 
 		var linknya = wpajax_url + '?action=slb_annouce_subscribers';
 
-		$('form#slb_register_form').bind('submit',function(){
+		$('form#annoucement_form').bind('submit',function(){
 			$form = $(this);
 			var datanya = $form.serialize();
+			console.log(datanya);
 			$.ajax({
 				'method': 'post',
 				'url': linknya,
