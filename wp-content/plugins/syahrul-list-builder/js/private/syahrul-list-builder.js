@@ -36,7 +36,6 @@ jQuery(document).ready(function($){
 				method: 'post',
 				url: linknya,
 				dataType:'json',
-				cache:false,
 				contentType:'application/json',
 				data: datanya ,
 				'success': function( data, textStatus ) {
