@@ -31,13 +31,13 @@ jQuery(document).ready(function($){
 
 		$('form#annoucement_form').bind('submit',function(){
 			$form = $(this);
-			var datanya = $form.serialize();
+			var datanya = $form.serializeArray();
 			console.log(datanya);
 			$.ajax({
 				'method': 'post',
 				'url': linknya,
 				'dataType':'json',
-				'data': datanya ,
+				'data': {datanya:datanya} ,
 				'success': function( data, textStatus ) {
 					if( data.status == 1 ) {
 						$form[0].reset();
